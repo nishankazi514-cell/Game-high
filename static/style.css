@@ -1,0 +1,838 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #050907;
+    --bg2: #0a120e;
+    --panel: #0d1813;
+    --panel2: #111f18;
+
+    --gold: #d7b45a;
+    --gold-light: #f4dc8a;
+
+    --green: #16a879;
+    --green-light: #35d69d;
+
+    --white: #f5f5ef;
+    --muted: #9ca79f;
+
+    --red: #d94a55;
+
+    --border: rgba(215, 180, 90, 0.25);
+}
+
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+
+body {
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at 50% -10%,
+            rgba(22, 168, 121, 0.30),
+            transparent 45%
+        ),
+        radial-gradient(
+            circle at 100% 
+                      rgba(215, 180, 90, 0.10),
+            transparent 35%
+        ),
+        var(--bg);
+
+    color: var(--white);
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================
+   MAIN APP
+========================= */
+
+.app {
+    width: 100%;
+    max-width: 540px;
+
+    min-height: 100vh;
+
+    margin: 0 auto;
+
+    padding:
+        20px
+        16px
+        30px;
+}
+
+
+/* =========================
+   SCREEN
+========================= */
+
+.screen {
+    width: 100%;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================
+   HOME HERO
+========================= */
+
+.hero-card {
+    width: 100%;
+
+    margin-top: 8vh;
+
+    padding:
+        34px
+        22px
+        30px;
+
+    text-align: center;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18, 34, 27, 0.98),
+            rgba(7, 13, 10, 0.98)
+        );
+
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+/* =========================
+   EYEBROW
+========================= */
+
+.eyebrow {
+    color: var(--gold);
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 4px;
+
+    margin-bottom: 15px;
+}
+
+
+/* =========================
+   TITLE
+========================= */
+
+h1 {
+    font-size: 40px;
+
+    line-height: 1.05;
+
+    letter-spacing: -1px;
+
+    margin-bottom: 15px;
+}
+
+h1 span {
+    display: block;
+
+    color: var(--gold-light);
+
+    margin-top: 5px;
+
+    text-shadow:
+        0 0 22px
+        rgba(215, 180, 90, 0.25);
+}
+
+
+/* =========================
+   TEXT
+========================= */
+
+.tagline {
+    color: var(--white);
+
+    font-size: 15px;
+
+    margin-bottom: 8px;
+}
+
+.safe-note {
+    color: var(--muted);
+
+    font-size: 12px;
+
+    margin-bottom: 24px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+    width: 100%;
+
+    border: none;
+
+    border-radius: 15px;
+
+    padding: 16px 20px;
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    letter-spacing: 1.2px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button:disabled {
+    opacity: 0.55;
+
+    cursor: not-allowed;
+}
+
+
+/* MAIN BUTTON */
+
+.main-btn {
+    color: #171208;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--gold-light),
+            var(--gold)
+        );
+
+    box-shadow:
+        0 10px 30px
+        rgba(215, 180, 90, 0.18);
+}
+
+.main-btn:hover {
+    box-shadow:
+        0 14px 38px
+        rgba(215, 180, 90, 0.30);
+}
+
+
+/* SECONDARY BUTTON */
+
+.secondary-btn {
+    margin-top: 20px;
+
+    color: var(--white);
+
+    background:
+        linear-gradient(
+            145deg,
+            #182820,
+            #101914
+        );
+
+    border:
+        1px solid
+        var(--border);
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status {
+    min-height: 22px;
+
+    margin-top: 16px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+          /* =========================
+   ARENA
+========================= */
+
+#arena {
+    margin-top: 5vh;
+}
+
+
+/* =========================
+   ARENA HEADER
+========================= */
+
+.arena-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 18px;
+
+    background:
+        rgba(13, 24, 19, 0.92);
+
+    box-shadow:
+        0 15px 40px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+.hud-box {
+    flex: 1;
+
+    text-align: center;
+}
+
+
+.hud-box span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 5px;
+}
+
+
+.hud-box strong {
+    display: block;
+
+    color: var(--gold-light);
+
+    font-size: 21px;
+}
+
+
+.round-box {
+    color: var(--gold);
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   PLAYERS AREA
+========================= */
+
+.players-area {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 8px;
+
+    margin-top: 50px;
+
+    margin-bottom: 25px;
+}
+
+
+.player {
+    flex: 1;
+
+    text-align: center;
+}
+
+
+.player-name {
+    color: var(--muted);
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 12px;
+}
+
+
+/* =========================
+   VS
+========================= */
+
+.vs {
+    flex: 0 0 auto;
+
+    color: var(--gold-light);
+
+    font-size: 16px;
+
+    font-weight: 1000;
+
+    text-shadow:
+        0 0 15px
+        rgba(215, 180, 90, 0.3);
+}
+
+
+/* =========================
+   PLAYING CARD
+========================= */
+
+.playing-card {
+    width: 125px;
+
+    height: 175px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 2px;
+
+    border-radius: 17px;
+
+    border:
+        2px solid
+        var(--gold);
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf5,
+            #e9e4d5
+        );
+
+    color: #15120d;
+
+    font-size: 40px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 18px 40px
+        rgba(0, 0, 0, 0.55);
+
+    position: relative;
+
+    overflow: hidden;
+
+    animation:
+        cardAppear 0.35s ease;
+}
+
+
+/* =========================
+   CARD BACK
+========================= */
+
+.playing-card.back {
+    color: var(--gold-light);
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #0c271d 0,
+            #0c271d 8px,
+            #164432 8px,
+            #164432 16px
+        );
+
+    border:
+        2px solid
+        rgba(215, 180, 90, 0.75);
+
+    box-shadow:
+        0 18px 45px
+        rgba(0, 0, 0, 0.60),
+        inset 0 0 30px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+/* =========================
+   RED CARD
+========================= */
+
+.playing-card.red {
+    color: #c5303d;
+}
+
+
+/* =========================
+   COUNTDOWN
+========================= */
+
+.countdown {
+    min-height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--gold-light);
+
+    font-size: 38px;
+
+    font-weight: 1000;
+
+    letter-spacing: 2px;
+
+    text-shadow:
+        0 0 25px
+        rgba(215, 180, 90, 0.35);
+
+    animation:
+        countdownPulse 0.8s ease;
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+.result {
+    min-height: 32px;
+
+    margin-top: 5px;
+
+    text-align: center;
+
+    color: var(--gold-light);
+
+    font-size: 22px;
+
+    font-weight: 1000;
+
+    letter-spacing: 1px;
+}
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes cardAppear {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(15px)
+            rotateY(90deg);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            rotateY(0);
+    }
+}
+
+
+@keyframes countdownPulse {
+
+    0% {
+        transform: scale(0.7);
+
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+
+        opacity: 1;
+    }
+}
+
+
+/* =========================
+   SMALL PHONE
+========================= */
+
+@media (max-width: 390px) {
+
+    .app {
+        padding:
+            15px
+            12px
+            25px;
+    }
+
+    .hero-card {
+        padding:
+            28px
+            16px
+            25px;
+
+        margin-top: 5vh;
+    }
+
+    h1 {
+        font-size: 33px;
+    }
+
+    .playing-card {
+        width: 105px;
+
+        height: 150px;
+
+        font-size: 34px;
+    }
+
+    .players-area {
+        margin-top: 35px;
+    }
+}
+
+
+/* =========================
+   VERY SMALL PHONE
+========================= */
+
+@media (max-width: 340px) {
+
+    h1 {
+        font-size: 29px;
+    }
+
+    .playing-card {
+        width: 92px;
+
+        height: 135px;
+
+        font-size: 30px;
+    }
+
+    .vs {
+        font-size: 13px;
+    }
+}
+const socket = io();
+
+const findBtn = document.getElementById("findBtn");
+const againBtn = document.getElementById("againBtn");
+
+const statusEl = document.getElementById("status");
+const arena = document.getElementById("arena");
+
+const countdown = document.getElementById("countdown");
+const result = document.getElementById("result");
+
+const yourCard = document.getElementById("yourCard");
+const oppCard = document.getElementById("oppCard");
+
+const scoreEl = document.getElementById("score");
+const winsEl = document.getElementById("wins");
+const roundEl = document.getElementById("round");
+
+
+let score = 0;
+let wins = 0;
+let round = 0;
+
+
+/* =========================
+   RESET CARDS
+========================= */
+
+function resetCards() {
+
+    yourCard.className =
+        "playing-card back";
+
+    yourCard.textContent = "?";
+
+
+    oppCard.className =
+        "playing-card back";
+
+    oppCard.textContent = "?";
+}
+
+
+/* =========================
+   SHOW CARD
+========================= */
+
+function showCard(el, card) {
+
+    el.className =
+        "playing-card" +
+        (card.color === "red" ? " red" : "");
+
+
+    el.innerHTML =
+        `<div>${card.rank}</div>` +
+        `<div>${card.suit}</div>`;
+}
+
+
+/* =========================
+   FIND MATCH
+========================= */
+
+function findMatch() {
+
+    findBtn.disabled = true;
+
+    statusEl.textContent =
+        "Searching for an opponent...";
+
+
+    socket.emit("find_match");
+}
+
+
+/* =========================
+   FIND BUTTON
+========================= */
+
+findBtn.addEventListener(
+    "click",
+    findMatch
+);
+
+
+/* =========================
+   PLAY AGAIN
+========================= */
+
+againBtn.addEventListener(
+    "click",
+    () => {
+
+        result.textContent = "";
+
+        countdown.textContent = "";
+
+        resetCards();
+
+        findBtn.disabled = false;
+
+        findMatch();
+    }
+);
+
+
+/* =========================
+   SOCKET CONNECTED
+========================= */
+
+socket.on(
+    "connected",
+    () => {
+
+        statusEl.textContent =
+            "Connected";
+    }
+);
+
+
+/* =========================
+   MATCHMAKING
+========================= */
+
+socket.on(
+    "matchmaking",
+    data => {
+
+        statusEl.textContent =
+            data.message;
+    }
+);
+
+
+/* =========================
+   MATCH FOUND
+========================= */
+
+socket.on(
+    "match_found",
+    data => {
+
+        arena.classList.remove("hidden");
+
+
+        statusEl.textContent =
+            `Opponent found • Player ${data.player_number}`;
+
+
+        round += 1;
+
+
+        roundEl.textContent =
+            `ROUND ${round}`;
+
+
+        result.textContent = "";
+
+
+        resetCards();
+    }
+);
