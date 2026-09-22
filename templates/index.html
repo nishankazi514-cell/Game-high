@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#07110d"
+    >
+
+    <title>High Card Duel</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+</head>
+
+
+<body>
+
+    <main class="app">
+
+        <!-- =========================
+             HOME / MATCHMAKING
+        ========================== -->
+
+        <section
+            id="homeScreen"
+            class="screen"
+        >
+
+            <div class="hero-card">
+
+                <div class="eyebrow">
+                    1V1 REAL-TIME ARENA
+                </div>
+
+                <h1>
+                    HIGH CARD
+                    <span>DUEL</span>
+                </h1>
+
+                <p class="tagline">
+                    Fast real-time card showdown
+                </p>
+
+                <p class="safe-note">
+                    Virtual points only • No wagering
+                </p>
+
+                <button
+                    id="findBtn"
+                    class="main-btn"
+                >
+                    FIND OPPONENT
+                </button>
+
+                <div
+                    id="status"
+                    class="status"
+                >
+                    Connecting...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             GAME ARENA
+        ========================== -->
+
+        <section
+            id="arena"
+            class="screen hidden"
+        >
+
+            <div class="arena-header">
+
+                <div class="hud-box">
+                    <span>YOU</span>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="round-box">
+                    <span id="round">
+                        ROUND 1
+                    </span>
+                </div>
+
+                <div class="hud-box">
+                    <span>WINS</span>
+                    <strong id="wins">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- PLAYERS -->
+
+            <div class="players-area">
+
+
+                <!-- PLAYER -->
+
+                <div class="player">
+
+                    <div class="player-name">
+                        YOU
+                    </div>
+
+                    <div
+                        id="yourCard"
+                        class="playing-card back"
+                    >
+                        ?
+                    </div>
+
+                </div>
+
+
+                <!-- VS -->
+
+                <div class="vs">
+                    VS
+                </div>
+
+
+                <!-- OPPONENT -->
+
+                <div class="player">
+
+                    <div class="player-name">
+                        OPPONENT
+                    </div>
+
+                    <div
+                        id="oppCard"
+                        class="playing-card back"
+                    >
+                        ?
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- COUNTDOWN -->
+
+            <div
+                id="countdown"
+                class="countdown"
+            ></div>
+
+
+            <!-- RESULT -->
+
+            <div
+                id="result"
+                class="result"
+            ></div>
+
+
+            <!-- PLAY AGAIN -->
+
+            <button
+                id="againBtn"
+                class="secondary-btn"
+            >
+                PLAY AGAIN
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <!-- SOCKET.IO -->
+
+    <script
+        src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+    ></script>
+
+
+    <!-- GAME JAVASCRIPT -->
+
+    <script
+        src="/static/main.js"
+    ></script>
+
+</body>
+
+</html>
