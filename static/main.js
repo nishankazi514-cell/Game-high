@@ -1,54 +1,163 @@
+/* =========================================
+   HIGH CARD DUEL
+   MAIN JAVASCRIPT
+   PART 1 / 4
+========================================= */
+
+
+/* ================= SOCKET ================= */
+
 const socket = io();
 
-const homeScreen = document.getElementById("homeScreen");
-const arena = document.getElementById("arena");
 
-const findBtn = document.getElementById("findBtn");
-const againBtn = document.getElementById("againBtn");
+/* ================= SCREENS ================= */
 
-const statusEl = document.getElementById("status");
-const countdown = document.getElementById("countdown");
-const result = document.getElementById("result");
+const homeScreen =
+    document.getElementById("homeScreen");
 
-const yourCard = document.getElementById("yourCard");
-const oppCard = document.getElementById("oppCard");
+const searchScreen =
+    document.getElementById("searchScreen");
 
-const scoreEl = document.getElementById("score");
-const winsEl = document.getElementById("wins");
-const roundEl = document.getElementById("round");
+const arenaScreen =
+    document.getElementById("arenaScreen");
 
-let score = 0;
-let wins = 0;
-let round = 0;
+
+/* ================= BUTTONS ================= */
+
+const findBtn =
+    document.getElementById("findBtn");
+
+const cancelBtn =
+    document.getElementById("cancelBtn");
+
+const playAgainBtn =
+    document.getElementById("playAgainBtn");
+
+const leaveBtn =
+    document.getElementById("leaveBtn");
+
+
+/* ================= STATUS ================= */
+
+const homeStatus =
+    document.getElementById("homeStatus");
+
+const searchStatus =
+    document.getElementById("searchStatus");
+
+const arenaStatus =
+    document.getElementById("arenaStatus");
+
+
+/* ================= GAME ELEMENTS ================= */
+
+const yourCard =
+    document.getElementById("yourCard");
+
+const opponentCard =
+    document.getElementById("opponentCard");
+
+const countdown =
+    document.getElementById("countdown");
+
+const resultBox =
+    document.getElementById("resultBox");
+
+const resultIcon =
+    document.getElementById("resultIcon");
+
+const resultTitle =
+    document.getElementById("resultTitle");
+
+const resultText =
+    document.getElementById("resultText");
+
+const pointsEarned =
+    document.getElementById("pointsEarned");
+
+const score =
+    document.getElementById("score");
+
+const wins =
+    document.getElementById("wins");
+
+const roundLabel =
+    document.getElementById("roundLabel");
+
+const roundNumber =
+    document.getElementById("roundNumber");
+
+const gameState =
+    document.getElementById("gameState");
+
+
+/* ================= GAME STATE ================= */
+
+let totalPoints = 0;
+
+let totalWins = 0;
+
+let currentRound = 0;
+
+let playerNumber = 0;
+
+let connected = false;
+
+let searching = false;
+
+let duelActive = false;
+
+let countdownTimer = null;
+
+
+/* ================= AUDIO ================= */
 
 let audioContext = null;
 
 
-/* =========================
-   SOUND SYSTEM
-========================= */
+/*
+   Browser sound starts only after
+   the player interacts with the page.
+*/
 
 function initSound() {
+
     if (!audioContext) {
-        audioContext = new (
+
+        const AudioContext =
             window.AudioContext ||
-            window.webkitAudioContext
-        )();
+            window.webkitAudioContext;
+
+        if (!AudioContext) {
+            return;
+        }
+
+        audioContext =
+            new AudioContext();
     }
 
-    if (audioContext.state === "suspended") {
+    if (
+        audioContext.state ===
+        "suspended"
+    ) {
+
         audioContext.resume();
     }
 }
 
 
-function beep(
-    frequency = 500,
-    duration = 0.12,
+/* ================= BASIC SOUND ================= */
+
+function playTone(
+    frequency,
+    duration,
     type = "sine",
-    volume = 0.06
+    volume = 0.05
 ) {
-    if (!audioContext) return;
+
+    if (!audioContext) {
+        return;
+    }
 
     const oscillator =
         audioContext.createOscillator();
@@ -56,445 +165,1273 @@ function beep(
     const gain =
         audioContext.createGain();
 
+
     oscillator.type = type;
-    oscillator.frequency.value = frequency;
+
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        audioContext.currentTime
+    );
+
 
     gain.gain.setValueAtTime(
         volume,
         audioContext.currentTime
     );
 
+
     gain.gain.exponentialRampToValueAtTime(
         0.001,
-        audioContext.currentTime + duration
+        audioContext.currentTime +
+        duration
     );
 
+
     oscillator.connect(gain);
-    gain.connect(audioContext.destination);
+
+    gain.connect(
+        audioContext.destination
+    );
+
 
     oscillator.start();
 
+
     oscillator.stop(
-        audioContext.currentTime + duration
+        audioContext.currentTime +
+        duration
     );
 }
 
 
+/* ================= CLICK SOUND ================= */
+
 function soundClick() {
-    beep(650, 0.08, "sine", 0.05);
+
+    playTone(
+        650,
+        0.08,
+        "sine",
+        0.045
+    );
 }
 
+
+/* ================= SEARCH SOUND ================= */
+
+function soundSearch() {
+
+    playTone(
+        430,
+        0.10,
+        "triangle",
+        0.04
+    );
+
+    setTimeout(() => {
+
+        playTone(
+            620,
+            0.10,
+            "triangle",
+            0.035
+        );
+
+    }, 120);
+}
+
+
+/* ================= COUNTDOWN SOUND ================= */
 
 function soundCountdown() {
-    beep(420, 0.12, "square", 0.045);
+
+    playTone(
+        520,
+        0.12,
+        "square",
+        0.035
+    );
 }
 
 
-function soundReveal() {
-    beep(720, 0.10, "triangle", 0.06);
+/* ================= DUEL SOUND ================= */
+
+function soundDuel() {
+
+    playTone(
+        700,
+        0.10,
+        "square",
+        0.045
+    );
 
     setTimeout(() => {
-        beep(980, 0.12, "triangle", 0.05);
-    }, 80);
+
+        playTone(
+            950,
+            0.16,
+            "square",
+            0.045
+        );
+
+    }, 100);
 }
 
+
+/* ================= CARD SOUND ================= */
+
+function soundCard() {
+
+    playTone(
+        760,
+        0.09,
+        "triangle",
+        0.05
+    );
+
+    setTimeout(() => {
+
+        playTone(
+            1050,
+            0.12,
+            "triangle",
+            0.045
+        );
+
+    }, 100);
+}
+
+
+/* ================= WIN SOUND ================= */
 
 function soundWin() {
-    beep(660, 0.12, "sine", 0.07);
+
+    playTone(
+        660,
+        0.12,
+        "sine",
+        0.06
+    );
 
     setTimeout(() => {
-        beep(880, 0.14, "sine", 0.07);
+
+        playTone(
+            830,
+            0.12,
+            "sine",
+            0.06
+        );
+
     }, 130);
 
     setTimeout(() => {
-        beep(1100, 0.20, "sine", 0.06);
-    }, 270);
+
+        playTone(
+            1100,
+            0.20,
+            "sine",
+            0.055
+        );
+
+    }, 260);
 }
 
+
+/* ================= LOSE SOUND ================= */
 
 function soundLose() {
-    beep(320, 0.16, "sawtooth", 0.045);
+
+    playTone(
+        350,
+        0.16,
+        "sawtooth",
+        0.035
+    );
 
     setTimeout(() => {
-        beep(220, 0.25, "sawtooth", 0.035);
-    }, 150);
+
+        playTone(
+            230,
+            0.22,
+            "sawtooth",
+            0.03
+        );
+
+    }, 160);
 }
 
+
+/* ================= DRAW SOUND ================= */
 
 function soundDraw() {
-    beep(500, 0.14, "triangle", 0.05);
+
+    playTone(
+        520,
+        0.13,
+        "triangle",
+        0.04
+    );
 
     setTimeout(() => {
-        beep(500, 0.14, "triangle", 0.04);
-    }, 170);
+
+        playTone(
+            520,
+            0.13,
+            "triangle",
+            0.035
+        );
+
+    }, 180);
 }
 
 
-/* =========================
-   CARD FUNCTIONS
-========================= */
+/* ================= SCREEN HELPER ================= */
+
+function showScreen(screen) {
+
+    homeScreen.classList.add("hidden");
+
+    searchScreen.classList.add("hidden");
+
+    arenaScreen.classList.add("hidden");
+
+
+    screen.classList.remove("hidden");
+}
+
+
+/* ================= STATUS ================= */
+
+function setHomeStatus(message) {
+
+    homeStatus.textContent =
+        message;
+}
+
+
+function setSearchStatus(message) {
+
+    searchStatus.textContent =
+        message;
+}
+
+
+function setArenaStatus(message) {
+
+    arenaStatus.textContent =
+        message;
+}
+
+
+/* ================= RESET CARD ================= */
 
 function resetCards() {
 
     yourCard.className =
-        "playing-card back";
+        "playing-card card-back";
 
-    yourCard.textContent = "?";
+    yourCard.innerHTML = `
+        <div class="question">?</div>
+        <div class="card-label">
+            YOUR CARD
+        </div>
+    `;
 
-    oppCard.className =
-        "playing-card back";
 
-    oppCard.textContent = "?";
+    opponentCard.className =
+        "playing-card card-back";
+
+    opponentCard.innerHTML = `
+        <div class="question">?</div>
+        <div class="card-label">
+            OPPONENT
+        </div>
+    `;
 }
 
 
-function showCard(element, card) {
+/* ================= RESET RESULT ================= */
 
-    element.className =
-        "playing-card";
+function resetResult() {
 
-    if (card.color === "red") {
-        element.classList.add("red");
-    }
+    resultBox.className =
+        "result-box hidden";
 
-    element.innerHTML =
-        `<div class="card-rank">${card.rank}</div>` +
-        `<div class="card-suit">${card.suit}</div>`;
+    resultIcon.textContent =
+        "🏆";
 
-    element.classList.add("card-reveal");
+    resultTitle.textContent =
+        "YOU WIN!";
 
-    setTimeout(() => {
-        element.classList.remove("card-reveal");
-    }, 500);
+    resultText.textContent =
+        "";
+
+    pointsEarned.textContent =
+        "+0";
 }
 
 
-/* =========================
-   MATCHMAKING
-========================= */
+/* ================= RESET ROUND ================= */
 
-function findMatch() {
-
-    initSound();
-    soundClick();
-
-    findBtn.disabled = true;
-
-    statusEl.textContent =
-        "🔎 Searching for opponent...";
-
-    result.textContent = "";
-
-    countdown.textContent = "";
+function resetRoundUI() {
 
     resetCards();
 
-    socket.emit("find_match");
+    resetResult();
+
+    countdown.textContent =
+        "READY";
+
+    gameState.textContent =
+        "READY";
+
+    playAgainBtn.classList.add(
+        "hidden"
+    );
 }
 
 
+/* ================= INITIAL STATE ================= */
+
+resetCards();
+
+resetResult();
+
+setHomeStatus(
+    "🔄 Connecting to server..."
+);
+/* =========================================
+   SOCKET EVENTS + BUTTONS
+   PART 2 / 4
+========================================= */
+
+
+/* ================= CONNECT ================= */
+
+socket.on("connect", () => {
+
+    connected = true;
+
+    setHomeStatus(
+        "🟢 Connected to server"
+    );
+
+    findBtn.disabled = false;
+
+});
+
+
+/* ================= CONNECT ERROR ================= */
+
+socket.on("connect_error", () => {
+
+    connected = false;
+
+    findBtn.disabled = true;
+
+    setHomeStatus(
+        "🔴 Server connection failed"
+    );
+
+});
+
+
+/* ================= DISCONNECT ================= */
+
+socket.on("disconnect", () => {
+
+    connected = false;
+
+    findBtn.disabled = true;
+
+    if (!duelActive) {
+
+        setHomeStatus(
+            "🔴 Disconnected from server"
+        );
+
+    }
+
+});
+
+
+/* ================= FIND OPPONENT ================= */
+
 findBtn.addEventListener(
     "click",
-    findMatch
+    () => {
+
+        if (!connected) {
+            return;
+        }
+
+        initSound();
+
+        soundClick();
+
+        searching = true;
+
+        findBtn.disabled = true;
+
+        showScreen(searchScreen);
+
+        setSearchStatus(
+            "Searching for opponent..."
+        );
+
+        soundSearch();
+
+        socket.emit(
+            "find_match"
+        );
+
+    }
 );
 
 
-/* =========================
-   PLAY AGAIN
-========================= */
+/* ================= CANCEL SEARCH ================= */
 
-againBtn.addEventListener(
+cancelBtn.addEventListener(
     "click",
     () => {
 
         initSound();
+
         soundClick();
 
-        result.textContent = "";
+        searching = false;
 
-        countdown.textContent = "";
+        socket.emit(
+            "leave_match"
+        );
 
-        resetCards();
+        showScreen(homeScreen);
 
-        findBtn.disabled = false;
+        if (connected) {
+            findBtn.disabled = false;
+        }
 
-        findMatch();
+        setHomeStatus(
+            "🟢 Ready to find an opponent"
+        );
+
     }
 );
 
 
-/* =========================
-   SOCKET CONNECTION
-========================= */
-
-socket.on(
-    "connect",
-    () => {
-
-        statusEl.textContent =
-            "🟢 Connected • Ready to play";
-    }
-);
-
-
-socket.on(
-    "disconnect",
-    () => {
-
-        statusEl.textContent =
-            "🔴 Connection lost...";
-    }
-);
-
-
-socket.on(
-    "connected",
-    () => {
-
-        statusEl.textContent =
-            "🟢 Connected • Ready to play";
-    }
-);
-
-
-/* =========================
-   WAITING
-========================= */
+/* ================= MATCHMAKING ================= */
 
 socket.on(
     "matchmaking",
-    data => {
+    (data) => {
 
-        statusEl.textContent =
-            "🔎 " + data.message;
+        if (!data) {
+            return;
+        }
 
-        findBtn.disabled = true;
+        if (
+            data.status ===
+            "waiting"
+        ) {
+
+            setSearchStatus(
+                "🔎 Waiting for another player..."
+            );
+
+        }
+
     }
 );
 
 
-/* =========================
-   MATCH FOUND
-========================= */
+/* ================= PLAYER NAMES ================= */
+
+const playerNames =
+    document.querySelectorAll(
+        ".player-name"
+    );
+
+
+function updatePlayerNames() {
+
+    if (
+        !playerNames ||
+        playerNames.length < 2
+    ) {
+        return;
+    }
+
+
+    if (playerNumber === 1) {
+
+        playerNames[0].textContent =
+            "PLAYER 1 • YOU";
+
+        playerNames[1].textContent =
+            "PLAYER 2 • OPPONENT";
+
+    } else {
+
+        playerNames[0].textContent =
+            "PLAYER 2 • YOU";
+
+        playerNames[1].textContent =
+            "PLAYER 1 • OPPONENT";
+
+    }
+
+}
+
+
+/* ================= MATCH FOUND ================= */
 
 socket.on(
     "match_found",
-    data => {
+    (data) => {
 
-        initSound();
-        soundClick();
+        if (!data) {
+            return;
+        }
 
-        homeScreen.classList.add(
-            "hidden"
+        searching = false;
+
+        duelActive = true;
+
+        playerNumber =
+            data.player_number || 1;
+
+
+        currentRound++;
+
+        roundLabel.textContent =
+            "ROUND " +
+            currentRound;
+
+        roundNumber.textContent =
+            currentRound;
+
+
+        updatePlayerNames();
+
+        resetRoundUI();
+
+
+        gameState.textContent =
+            "MATCHED";
+
+        setArenaStatus(
+            "⚔️ Opponent found! Get ready..."
         );
 
-        arena.classList.remove(
-            "hidden"
+
+        showScreen(
+            arenaScreen
         );
 
-        statusEl.textContent =
-            "⚔️ Opponent found! Get ready...";
 
-        round += 1;
+        soundDuel();
 
-        roundEl.textContent =
-            "ROUND " + round;
-
-        result.textContent = "";
-
-        countdown.textContent = "";
-
-        resetCards();
     }
 );
 
 
-/* =========================
-   COUNTDOWN
-========================= */
+/* ================= LEAVE DUEL ================= */
 
-socket.on(
-    "round_start",
-    data => {
+leaveBtn.addEventListener(
+    "click",
+    () => {
 
         initSound();
 
-        let n = data.countdown;
+        soundClick();
+
+        duelActive = false;
+
+        searching = false;
+
+        socket.emit(
+            "leave_match"
+        );
+
+        resetRoundUI();
+
+        showScreen(
+            homeScreen
+        );
+
+        if (connected) {
+
+            findBtn.disabled =
+                false;
+
+        }
+
+        setHomeStatus(
+            "🟢 Ready to find an opponent"
+        );
+
+    }
+);
+
+
+/* ================= PLAY AGAIN ================= */
+
+playAgainBtn.addEventListener(
+    "click",
+    () => {
+
+        if (!connected) {
+            return;
+        }
+
+        initSound();
+
+        soundClick();
+
+        playAgainBtn.disabled =
+            true;
+
+        playAgainBtn.textContent =
+            "⏳ PREPARING NEXT ROUND...";
+
+
+        /*
+          Server cleans the previous
+          room after about 5 seconds.
+        */
+
+        setTimeout(
+            () => {
+
+                if (!connected) {
+                    return;
+                }
+
+                playAgainBtn.disabled =
+                    false;
+
+                playAgainBtn.textContent =
+                    "⚔️ PLAY ANOTHER ROUND";
+
+
+                searching = true;
+
+                duelActive = false;
+
+                showScreen(
+                    searchScreen
+                );
+
+
+                setSearchStatus(
+                    "🔎 Searching for opponent..."
+                );
+
+
+                soundSearch();
+
+
+                socket.emit(
+                    "find_match"
+                );
+
+            },
+            5500
+        );
+
+    }
+);
+
+
+/* ================= READY STATE ================= */
+
+setHomeStatus(
+    "🔄 Connecting to server..."
+);
+
+findBtn.disabled = true;
+/* =========================================
+   ROUND COUNTDOWN + CARD REVEAL
+   PART 3 / 4
+========================================= */
+
+
+/* ================= ROUND START ================= */
+
+socket.on(
+    "round_start",
+    (data) => {
+
+        if (!data) {
+            return;
+        }
+
+        duelActive = true;
+
+        resetCards();
+
+        resetResult();
+
+        gameState.textContent =
+            "COUNTDOWN";
+
+        setArenaStatus(
+            "⚔️ Duel starting..."
+        );
+
+
+        let number =
+            Number(data.countdown) || 3;
+
 
         countdown.textContent =
-            n;
+            number;
+
+        countdown.classList.remove(
+            "countdown-big"
+        );
+
+        void countdown.offsetWidth;
+
+        countdown.classList.add(
+            "countdown-big"
+        );
 
         soundCountdown();
 
-        const timer =
-            setInterval(() => {
 
-                n -= 1;
+        if (countdownTimer) {
 
-                if (n > 0) {
+            clearInterval(
+                countdownTimer
+            );
 
-                    countdown.textContent =
-                        n;
+        }
 
-                    soundCountdown();
 
-                } else {
+        countdownTimer =
+            setInterval(
+                () => {
 
-                    clearInterval(timer);
+                    number--;
+
+
+                    if (number > 0) {
+
+                        countdown.textContent =
+                            number;
+
+                        countdown.classList.remove(
+                            "countdown-big"
+                        );
+
+                        void countdown.offsetWidth;
+
+                        countdown.classList.add(
+                            "countdown-big"
+                        );
+
+                        soundCountdown();
+
+                        return;
+
+                    }
+
+
+                    clearInterval(
+                        countdownTimer
+                    );
+
+                    countdownTimer =
+                        null;
+
 
                     countdown.textContent =
                         "DUEL!";
 
-                    beep(
-                        900,
-                        0.18,
-                        "square",
-                        0.06
-                    );
-                }
+                    gameState.textContent =
+                        "DUEL";
 
-            }, 1000);
+                    setArenaStatus(
+                        "🔥 Reveal your cards!"
+                    );
+
+                    soundDuel();
+
+
+                },
+                1000
+            );
+
     }
 );
-/* =========================
-   CARD REVEAL
-========================= */
+
+
+/* ================= CARD HTML ================= */
+
+function createCardHTML(card) {
+
+    if (!card) {
+
+        return `
+            <div class="question">?</div>
+        `;
+
+    }
+
+
+    const red =
+        card.color === "red"
+            ? "red"
+            : "";
+
+
+    return `
+
+        <div class="card-corner">
+            ${card.rank}${card.suit}
+        </div>
+
+        <div class="card-rank">
+            ${card.rank}
+        </div>
+
+        <div class="card-suit">
+            ${card.suit}
+        </div>
+
+        <div class="card-corner bottom">
+            ${card.rank}${card.suit}
+        </div>
+
+    `;
+
+}
+
+
+/* ================= SHOW CARD ================= */
+
+function showCard(
+    element,
+    card
+) {
+
+    if (!element || !card) {
+        return;
+    }
+
+
+    const red =
+        card.color === "red"
+            ? "red"
+            : "";
+
+
+    element.className =
+        "playing-card card-open " +
+        red;
+
+
+    element.innerHTML =
+        createCardHTML(card);
+
+
+    element.classList.remove(
+        "card-flip"
+    );
+
+    void element.offsetWidth;
+
+    element.classList.add(
+        "card-flip"
+    );
+
+
+    soundCard();
+
+}
+
+
+/* ================= REVEAL CARD ================= */
 
 socket.on(
     "reveal_card",
-    data => {
+    (data) => {
 
-        initSound();
+        if (!data || !data.card) {
+            return;
+        }
+
+
+        duelActive = true;
+
+
+        if (countdownTimer) {
+
+            clearInterval(
+                countdownTimer
+            );
+
+            countdownTimer =
+                null;
+
+        }
+
+
+        countdown.textContent =
+            "OPEN";
+
+
+        gameState.textContent =
+            "REVEAL";
+
+
+        setArenaStatus(
+            "🃏 Your card has been revealed!"
+        );
+
+
+        /*
+          The server sends each player
+          their own card only.
+        */
 
         showCard(
             yourCard,
             data.card
         );
 
-        soundReveal();
 
-        statusEl.textContent =
-            "🃏 Your card is revealed!";
+        /*
+          Opponent card stays hidden
+          until the round result arrives.
+        */
+
+        opponentCard.className =
+            "playing-card card-back";
+
+
+        opponentCard.innerHTML = `
+
+            <div class="question">?</div>
+
+            <div class="card-label">
+                OPPONENT
+            </div>
+
+        `;
+
     }
 );
 
 
-/* =========================
-   ROUND RESULT
-========================= */
+/* ================= SAFE CARD RESET ================= */
+
+function prepareNextVisualRound() {
+
+    resetCards();
+
+    resetResult();
+
+    countdown.textContent =
+        "READY";
+
+    gameState.textContent =
+        "READY";
+
+}
+
+
+/* ================= PAGE VISIBILITY ================= */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            document.visibilityState ===
+            "visible"
+        ) {
+
+            initSound();
+
+        }
+
+    }
+);
+
+
+/* ================= FIRST TOUCH ================= */
+
+document.addEventListener(
+    "pointerdown",
+    () => {
+
+        initSound();
+
+    },
+    {
+        once: true
+      
+    }
+);
+/* =========================================
+   RESULT + POINTS + FINAL CONTROLS
+   PART 4 / 4
+========================================= */
+
+
+/* ================= SHOW OPPONENT CARD ================= */
+
+function showOpponentCard(card) {
+
+    if (!card) {
+        return;
+    }
+
+    const red =
+        card.color === "red"
+            ? "red"
+            : "";
+
+    opponentCard.className =
+        "playing-card card-open " +
+        red;
+
+    opponentCard.innerHTML =
+        createCardHTML(card);
+
+    opponentCard.classList.remove(
+        "card-flip"
+    );
+
+    void opponentCard.offsetWidth;
+
+    opponentCard.classList.add(
+        "card-flip"
+    );
+
+}
+
+
+/* ================= RESULT ================= */
 
 socket.on(
     "round_result",
-    data => {
+    (data) => {
 
-        initSound();
+        if (!data) {
+            return;
+        }
 
-        showCard(
-            yourCard,
-            data.your_card
-        );
 
-        setTimeout(() => {
+        duelActive = false;
 
-            showCard(
-                oppCard,
+
+        if (countdownTimer) {
+
+            clearInterval(
+                countdownTimer
+            );
+
+            countdownTimer = null;
+
+        }
+
+
+        /*
+          Show opponent's card.
+        */
+
+        if (data.opponent_card) {
+
+            showOpponentCard(
                 data.opponent_card
             );
 
-        }, 180);
-
-
-        countdown.textContent = "";
-
-
-        if (data.result === "win") {
-
-            wins += 1;
-
-            score += 100;
-
-            result.textContent =
-                "🏆 YOU WIN!";
-
-            result.className =
-                "result win";
-
-            statusEl.textContent =
-                "🎉 Great! You won this round.";
-
-            soundWin();
-
-        }
-
-        else if (data.result === "loss") {
-
-            result.textContent =
-                "DEFEAT";
-
-            result.className =
-                "result loss";
-
-            statusEl.textContent =
-                "Opponent won this round.";
-
-            soundLose();
-
-        }
-
-        else {
-
-            score += 25;
-
-            result.textContent =
-                "DRAW";
-
-            result.className =
-                "result draw";
-
-            statusEl.textContent =
-                "🤝 Same card value — Draw.";
-
-            soundDraw();
         }
 
 
-        scoreEl.textContent =
-            score;
+        /*
+          Make sure your card is visible.
+        */
 
-        winsEl.textContent =
-            wins;
+        if (data.your_card) {
+
+            showCard(
+                yourCard,
+                data.your_card
+            );
+
+        }
 
 
-        againBtn.disabled = false;
+        setTimeout(
+            () => {
 
-        againBtn.textContent =
-            "⚔️ PLAY ANOTHER ROUND";
+                showResult(
+                    data.result
+                );
+
+            },
+            650
+        );
+
     }
 );
 
 
-/* =========================
-   FIRST USER TOUCH
-   UNLOCK MOBILE SOUND
-========================= */
+/* ================= RESULT UI ================= */
 
-document.addEventListener(
-    "touchstart",
+function showResult(result) {
+
+    resultBox.classList.remove(
+        "hidden"
+    );
+
+    resultBox.classList.remove(
+        "result-win",
+        "result-lose",
+        "result-draw"
+    );
+
+
+    let earned = 0;
+
+
+    if (result === "win") {
+
+        resultBox.classList.add(
+            "result-win"
+        );
+
+        resultIcon.textContent =
+            "🏆";
+
+        resultTitle.textContent =
+            "YOU WIN!";
+
+        resultText.textContent =
+            "Your card is higher.";
+
+        earned = 100;
+
+        soundWin();
+
+
+        totalWins++;
+
+        wins.textContent =
+            totalWins;
+
+    }
+
+
+    else if (result === "loss") {
+
+        resultBox.classList.add(
+            "result-lose"
+        );
+
+        resultIcon.textContent =
+            "💥";
+
+        resultTitle.textContent =
+            "YOU LOSE";
+
+        resultText.textContent =
+            "Opponent had the higher card.";
+
+        earned = 0;
+
+        soundLose();
+
+    }
+
+
+    else {
+
+        resultBox.classList.add(
+            "result-draw"
+        );
+
+        resultIcon.textContent =
+            "🤝";
+
+        resultTitle.textContent =
+            "DRAW!";
+
+        resultText.textContent =
+            "Both cards have the same value.";
+
+        earned = 25;
+
+        soundDraw();
+
+    }
+
+
+    totalPoints += earned;
+
+
+    score.textContent =
+        totalPoints;
+
+
+    pointsEarned.textContent =
+        "+" + earned;
+
+
+    gameState.textContent =
+        "FINISHED";
+
+
+    setArenaStatus(
+        "🏁 Round finished"
+    );
+
+
+    /*
+      Allow another round.
+    */
+
+    playAgainBtn.classList.remove(
+        "hidden"
+    );
+
+}
+
+
+/* ================= SAFETY RESET ================= */
+
+window.addEventListener(
+    "beforeunload",
     () => {
-        initSound();
-    },
-    {
-        once: true
+
+        try {
+
+            socket.emit(
+                "leave_match"
+            );
+
+        } catch (error) {
+
+            /* Ignore browser closing errors */
+
+        }
+
     }
 );
 
 
-document.addEventListener(
-    "click",
-    () => {
-        initSound();
-    },
-    {
-        once: true
-    }
+/* ================= FINAL STARTUP ================= */
+
+showScreen(
+    homeScreen
+);
+
+findBtn.disabled = true;
+
+setHomeStatus(
+    "🔄 Connecting to server..."
 );
