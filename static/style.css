@@ -5,85 +5,37 @@
 }
 
 :root {
-    --bg: #050907;
-    --bg2: #0a120e;
-    --panel: #0d1813;
-    --panel2: #111f18;
-
-    --gold: #d7b45a;
-    --gold-light: #f4dc8a;
-
-    --green: #16a879;
-    --green-light: #35d69d;
-
-    --white: #f5f5ef;
-    --muted: #9ca79f;
-
-    --red: #d94a55;
-
-    --border: rgba(215, 180, 90, 0.25);
+    --bg: #050807;
+    --panel: #0c1210;
+    --panel2: #111a16;
+    --green: #27e38a;
+    --green2: #13b96d;
+    --gold: #f5c76a;
+    --white: #f5f7f6;
+    --muted: #87938d;
+    --red: #ff4d61;
+    --line: rgba(255,255,255,.08);
 }
-
 
 html,
 body {
     width: 100%;
     min-height: 100%;
-}
-
-
-body {
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at 50% -10%,
-            rgba(22, 168, 121, 0.30),
-            transparent 45%
-        ),
-        radial-gradient(
-            circle at 100% 
-                      rgba(215, 180, 90, 0.10),
-            transparent 35%
-        ),
-        var(--bg);
-
+    background: var(--bg);
     color: var(--white);
-
     font-family:
         Arial,
         Helvetica,
         sans-serif;
+}
 
+body {
+    min-height: 100vh;
     overflow-x: hidden;
 }
 
-
-/* =========================
-   MAIN APP
-========================= */
-
-.app {
-    width: 100%;
-    max-width: 540px;
-
-    min-height: 100vh;
-
-    margin: 0 auto;
-
-    padding:
-        20px
-        16px
-        30px;
-}
-
-
-/* =========================
-   SCREEN
-========================= */
-
-.screen {
-    width: 100%;
+button {
+    font-family: inherit;
 }
 
 .hidden {
@@ -92,54 +44,116 @@ body {
 
 
 /* =========================
-   HOME HERO
+   APP
 ========================= */
 
-.hero-card {
+.app {
     width: 100%;
-
-    margin-top: 8vh;
-
-    padding:
-        34px
-        22px
-        30px;
-
-    text-align: center;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius: 24px;
-
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
     background:
-        linear-gradient(
-            145deg,
-            rgba(18, 34, 27, 0.98),
-            rgba(7, 13, 10, 0.98)
-        );
+        radial-gradient(
+            circle at 50% 10%,
+            rgba(39,227,138,.10),
+            transparent 35%
+        ),
+        #050807;
+}
 
-    box-shadow:
-        0 30px 80px rgba(0, 0, 0, 0.55),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+.screen {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    padding: 22px 16px;
 }
 
 
 /* =========================
-   EYEBROW
+   HOME
 ========================= */
 
-.eyebrow {
-    color: var(--gold);
+#homeScreen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-card {
+    width: 100%;
+    padding: 28px 20px;
+    border: 1px solid var(--line);
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,31,26,.98),
+            rgba(7,12,10,.98)
+        );
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.04);
+
+    text-align: center;
+}
+
+
+.game-badge {
+    display: inline-block;
+    padding: 7px 12px;
+    border-radius: 999px;
+
+    color: var(--green);
+    border: 1px solid rgba(39,227,138,.25);
+    background: rgba(39,227,138,.07);
 
     font-size: 11px;
-
     font-weight: 800;
+    letter-spacing: 1.2px;
+}
 
-    letter-spacing: 4px;
 
-    margin-bottom: 15px;
+/* =========================
+   LOGO
+========================= */
+
+.logo {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 25px 0 14px;
+}
+
+.logo-card {
+    width: 55px;
+    height: 72px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+
+    background: #f7f7f5;
+    color: #111;
+
+    font-size: 25px;
+    font-weight: 900;
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.35);
+}
+
+.logo-card span {
+    font-size: 15px;
+    color: var(--red);
+}
+
+.logo-card:first-child span {
+    color: #111;
 }
 
 
@@ -148,46 +162,95 @@ body {
 ========================= */
 
 h1 {
-    font-size: 40px;
-
-    line-height: 1.05;
-
+    font-size: 36px;
+    line-height: 1;
     letter-spacing: -1px;
-
-    margin-bottom: 15px;
+    font-weight: 900;
 }
 
 h1 span {
     display: block;
-
-    color: var(--gold-light);
-
+    color: var(--green);
     margin-top: 5px;
+}
 
-    text-shadow:
-        0 0 22px
-        rgba(215, 180, 90, 0.25);
+.tagline {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.safe-note {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 7px 12px;
+
+    border-radius: 999px;
+
+    color: var(--green);
+    background: rgba(39,227,138,.08);
+
+    font-size: 11px;
+    font-weight: 800;
 }
 
 
 /* =========================
-   TEXT
+   HOW TO PLAY
 ========================= */
 
-.tagline {
-    color: var(--white);
+.how-box {
+    margin-top: 25px;
+    padding: 16px;
 
-    font-size: 15px;
+    border-radius: 16px;
 
-    margin-bottom: 8px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid var(--line);
+
+    text-align: left;
 }
 
-.safe-note {
-    color: var(--muted);
+.how-title {
+    margin-bottom: 13px;
+
+    color: var(--gold);
+
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1.3px;
+}
+
+.how-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    margin-top: 10px;
+}
+
+.how-row span {
+    width: 25px;
+    height: 25px;
+
+    flex: 0 0 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(39,227,138,.12);
+    color: var(--green);
 
     font-size: 12px;
+    font-weight: 900;
+}
 
-    margin-bottom: 24px;
+.how-row p {
+    color: #c5cdc8;
+    font-size: 13px;
 }
 
 
@@ -195,145 +258,141 @@ h1 span {
    BUTTONS
 ========================= */
 
-button {
+.main-btn,
+.secondary-btn {
     width: 100%;
-
-    border: none;
-
-    border-radius: 15px;
-
-    padding: 16px 20px;
-
-    font-size: 13px;
-
-    font-weight: 900;
-
-    letter-spacing: 1.2px;
-
+    border: 0;
     cursor: pointer;
 
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: .5px;
+
     transition:
-        transform 0.15s ease,
-        box-shadow 0.2s ease,
-        opacity 0.2s ease;
+        transform .15s ease,
+        opacity .15s ease,
+        box-shadow .15s ease;
 }
-
-button:active {
-    transform: scale(0.97);
-}
-
-button:disabled {
-    opacity: 0.55;
-
-    cursor: not-allowed;
-}
-
-
-/* MAIN BUTTON */
 
 .main-btn {
-    color: #171208;
+    margin-top: 22px;
+    padding: 17px;
+
+    border-radius: 14px;
+
+    color: #031008;
 
     background:
         linear-gradient(
             135deg,
-            var(--gold-light),
-            var(--gold)
+            #46f3a1,
+            #17c977
         );
 
     box-shadow:
-        0 10px 30px
-        rgba(215, 180, 90, 0.18);
+        0 10px 30px rgba(39,227,138,.18);
 }
 
-.main-btn:hover {
-    box-shadow:
-        0 14px 38px
-        rgba(215, 180, 90, 0.30);
+.main-btn:active,
+.secondary-btn:active {
+    transform: scale(.97);
 }
 
+.main-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 
-/* SECONDARY BUTTON */
 
 .secondary-btn {
-    margin-top: 20px;
+    margin-top: 18px;
+    padding: 15px;
 
-    color: var(--white);
+    border-radius: 14px;
 
-    background:
-        linear-gradient(
-            145deg,
-            #182820,
-            #101914
-        );
+    color: var(--green);
 
-    border:
-        1px solid
-        var(--border);
+    background: rgba(39,227,138,.07);
+    border: 1px solid rgba(39,227,138,.25);
+}
+
+
+.status {
+    min-height: 20px;
+    margin-top: 13px;
+
+    color: #aab5af;
+
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.sound-note {
+    margin-top: 12px;
+    color: #66716b;
+    font-size: 10px;
 }
 
 
 /* =========================
-   STATUS
-========================= */
-
-.status {
-    min-height: 22px;
-
-    margin-top: 16px;
-
-    color: var(--muted);
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-          /* =========================
    ARENA
 ========================= */
 
 #arena {
-    margin-top: 5vh;
+    padding-top: 16px;
+}
+
+.arena-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+.arena-title {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: .5px;
+}
+
+.virtual-badge {
+    padding: 6px 9px;
+
+    border-radius: 999px;
+
+    color: var(--green);
+    background: rgba(39,227,138,.08);
+
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: 1px;
 }
 
 
 /* =========================
-   ARENA HEADER
+   SCORE HEADER
 ========================= */
 
 .arena-header {
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     gap: 10px;
 
-    padding: 14px;
-
-    border:
-        1px solid
-        var(--border);
-
-    border-radius: 18px;
-
-    background:
-        rgba(13, 24, 19, 0.92);
-
-    box-shadow:
-        0 15px 40px
-        rgba(0, 0, 0, 0.35);
+    align-items: center;
 }
-
 
 .hud-box {
-    flex: 1;
+    padding: 12px;
 
     text-align: center;
-}
 
+    border-radius: 14px;
+
+    background: var(--panel);
+    border: 1px solid var(--line);
+}
 
 .hud-box span {
     display: block;
@@ -341,184 +400,236 @@ button:disabled {
     color: var(--muted);
 
     font-size: 9px;
-
     font-weight: 800;
-
-    letter-spacing: 2px;
-
-    margin-bottom: 5px;
+    letter-spacing: 1px;
 }
-
 
 .hud-box strong {
     display: block;
 
-    color: var(--gold-light);
+    margin-top: 5px;
+
+    color: var(--green);
 
     font-size: 21px;
 }
 
-
 .round-box {
+    padding: 9px 12px;
+
+    border-radius: 999px;
+
     color: var(--gold);
 
-    font-size: 11px;
+    background: rgba(245,199,106,.07);
+    border: 1px solid rgba(245,199,106,.15);
 
+    font-size: 10px;
     font-weight: 900;
-
-    letter-spacing: 1px;
-
-    text-align: center;
-
     white-space: nowrap;
 }
 
 
 /* =========================
-   PLAYERS AREA
+   BATTLE STATUS
 ========================= */
 
-.players-area {
+.battle-status {
+    margin-top: 18px;
+    padding: 11px 13px;
+
     display: flex;
-
     align-items: center;
-
-    justify-content: space-between;
-
+    justify-content: center;
     gap: 8px;
 
-    margin-top: 50px;
+    border-radius: 12px;
 
-    margin-bottom: 25px;
-}
+    background: rgba(255,255,255,.025);
+    border: 1px solid var(--line);
 
+    color: #b6c0bb;
 
-.player {
-    flex: 1;
-
+    font-size: 12px;
     text-align: center;
 }
 
+.live-dot {
+    width: 7px;
+    height: 7px;
 
-.player-name {
-    color: var(--muted);
+    border-radius: 50%;
 
-    font-size: 10px;
+    background: var(--green);
 
-    font-weight: 800;
+    box-shadow:
+        0 0 10px var(--green);
 
-    letter-spacing: 2px;
+    animation: pulse 1.2s infinite;
+}
 
-    margin-bottom: 12px;
+@keyframes pulse {
+    50% {
+        opacity: .35;
+    }
 }
 
 
 /* =========================
-   VS
+   PLAYERS
 ========================= */
 
+.players-area {
+    margin-top: 35px;
+
+    display: grid;
+    grid-template-columns: 1fr 50px 1fr;
+
+    align-items: center;
+}
+
+.player {
+    text-align: center;
+}
+
+.player-name {
+    color: var(--white);
+
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: .7px;
+}
+
+.player-sub {
+    margin-top: 4px;
+
+    color: #626d67;
+
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.vs-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.vs-line {
+    width: 1px;
+    height: 32px;
+
+    background: var(--line);
+}
+
 .vs {
-    flex: 0 0 auto;
+    color: var(--gold);
 
-    color: var(--gold-light);
-
-    font-size: 16px;
-
-    font-weight: 1000;
-
-    text-shadow:
-        0 0 15px
-        rgba(215, 180, 90, 0.3);
+    font-size: 12px;
+    font-weight: 900;
 }
 
 
 /* =========================
-   PLAYING CARD
+   CARDS
 ========================= */
 
 .playing-card {
-    width: 125px;
+    width: 105px;
+    height: 145px;
 
-    height: 175px;
+    margin: 15px auto 0;
 
-    margin: 0 auto;
+    border-radius: 14px;
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     justify-content: center;
 
-    gap: 2px;
-
-    border-radius: 17px;
-
-    border:
-        2px solid
-        var(--gold);
-
-    background:
-        linear-gradient(
-            145deg,
-            #fffdf5,
-            #e9e4d5
-        );
-
-    color: #15120d;
-
-    font-size: 40px;
+    background: #f8f8f5;
+    color: #111;
 
     font-weight: 900;
 
     box-shadow:
-        0 18px 40px
-        rgba(0, 0, 0, 0.55);
+        0 15px 35px rgba(0,0,0,.45);
+
+    border: 3px solid #fff;
 
     position: relative;
-
     overflow: hidden;
-
-    animation:
-        cardAppear 0.35s ease;
 }
 
-
-/* =========================
-   CARD BACK
-========================= */
-
-.playing-card.back {
-    color: var(--gold-light);
-
-    background:
-        repeating-linear-gradient(
-            45deg,
-            #0c271d 0,
-            #0c271d 8px,
-            #164432 8px,
-            #164432 16px
-        );
-
-    border:
-        2px solid
-        rgba(215, 180, 90, 0.75);
-
-    box-shadow:
-        0 18px 45px
-        rgba(0, 0, 0, 0.60),
-        inset 0 0 30px
-        rgba(0, 0, 0, 0.35);
+.card-rank {
+    font-size: 34px;
+    line-height: 1;
 }
 
-
-/* =========================
-   RED CARD
-========================= */
+.card-suit {
+    margin-top: 5px;
+    font-size: 32px;
+}
 
 .playing-card.red {
-    color: #c5303d;
+    color: #e9344b;
+}
+
+
+/* CARD BACK */
+
+.playing-card.back {
+    color: #b9d6c7;
+
+    background:
+        linear-gradient(
+            135deg,
+            #163d2c,
+            #0a2117
+        );
+
+    border: 3px solid #1f6948;
+
+    font-size: 42px;
+        box-shadow:
+        0 0 0 4px rgba(39,227,138,.04),
+        0 15px 35px rgba(0,0,0,.5);
+}
+
+
+/* =========================
+   CARD REVEAL
+========================= */
+
+.card-reveal {
+    animation: cardReveal .45s ease;
+}
+
+@keyframes cardReveal {
+
+    0% {
+        transform:
+            rotateY(90deg)
+            scale(.85);
+
+        opacity: .2;
+    }
+
+    60% {
+        transform:
+            rotateY(-10deg)
+            scale(1.05);
+    }
+
+    100% {
+        transform:
+            rotateY(0)
+            scale(1);
+
+        opacity: 1;
+    }
 }
 
 
@@ -527,153 +638,275 @@ button:disabled {
 ========================= */
 
 .countdown {
-    min-height: 55px;
+    min-height: 60px;
+
+    margin-top: 24px;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
-    color: var(--gold-light);
+    color: var(--green);
 
-    font-size: 38px;
-
-    font-weight: 1000;
-
-    letter-spacing: 2px;
+    font-size: 42px;
+    font-weight: 900;
 
     text-shadow:
-        0 0 25px
-        rgba(215, 180, 90, 0.35);
+        0 0 25px rgba(39,227,138,.35);
 
     animation:
-        countdownPulse 0.8s ease;
+        countPop .35s ease;
 }
 
+@keyframes countPop {
 
+    from {
+        transform: scale(.5);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+}
 /* =========================
    RESULT
 ========================= */
 
 .result {
-    min-height: 32px;
+    min-height: 42px;
 
-    margin-top: 5px;
+    margin-top: 10px;
 
     text-align: center;
 
-    color: var(--gold-light);
-
-    font-size: 22px;
-
-    font-weight: 1000;
+    font-size: 27px;
+    font-weight: 900;
 
     letter-spacing: 1px;
 }
-/* =========================
-   ANIMATIONS
-========================= */
 
-@keyframes cardAppear {
+.result.win {
+    color: var(--green);
+
+    text-shadow:
+        0 0 25px rgba(39,227,138,.35);
+
+    animation:
+        resultPop .5s ease;
+}
+
+.result.loss {
+    color: var(--red);
+
+    animation:
+        resultPop .5s ease;
+}
+
+.result.draw {
+    color: var(--gold);
+
+    animation:
+        resultPop .5s ease;
+}
+
+
+@keyframes resultPop {
 
     from {
+        transform: scale(.7);
         opacity: 0;
-
-        transform:
-            translateY(15px)
-            rotateY(90deg);
     }
 
     to {
-        opacity: 1;
-
-        transform:
-            translateY(0)
-            rotateY(0);
-    }
-}
-
-
-@keyframes countdownPulse {
-
-    0% {
-        transform: scale(0.7);
-
-        opacity: 0;
-    }
-
-    100% {
         transform: scale(1);
-
         opacity: 1;
     }
+
 }
 
 
 /* =========================
-   SMALL PHONE
+   FOOTER
 ========================= */
 
-@media (max-width: 390px) {
+.arena-footer {
+    margin-top: 24px;
 
-    .app {
-        padding:
-            15px
-            12px
-            25px;
+    text-align: center;
+
+    color: #4d5852;
+
+    font-size: 9px;
+}
+
+
+/* =========================
+   BUTTON EFFECT
+========================= */
+
+.secondary-btn:hover {
+    box-shadow:
+        0 0 20px rgba(39,227,138,.12);
+}
+
+.main-btn:hover {
+    box-shadow:
+        0 0 25px rgba(39,227,138,.25);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 380px) {
+
+    .screen {
+        padding: 15px 12px;
     }
 
     .hero-card {
-        padding:
-            28px
-            16px
-            25px;
-
-        margin-top: 5vh;
+        padding: 23px 15px;
     }
 
     h1 {
-        font-size: 33px;
-    }
-
-    .playing-card {
-        width: 105px;
-
-        height: 150px;
-
-        font-size: 34px;
-    }
-
-    .players-area {
-        margin-top: 35px;
-    }
-}
-
-
-/* =========================
-   VERY SMALL PHONE
-========================= */
-
-@media (max-width: 340px) {
-
-    h1 {
-        font-size: 29px;
+        font-size: 31px;
     }
 
     .playing-card {
         width: 92px;
+        height: 130px;
+    }
 
-        height: 135px;
-
+    .card-rank {
         font-size: 30px;
     }
 
-    .vs {
-        font-size: 13px;
+    .card-suit {
+        font-size: 28px;
     }
+
+    .players-area {
+        grid-template-columns:
+            1fr 42px 1fr;
+    }
+
+}
+/* =========================
+   EXTRA MOBILE POLISH
+========================= */
+
+@media (max-width: 340px) {
+
+    .screen {
+        padding: 12px 9px;
+    }
+
+    .hero-card {
+        padding: 20px 12px;
+        border-radius: 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    .logo-card {
+        width: 48px;
+        height: 64px;
+    }
+
+    .playing-card {
+        width: 82px;
+        height: 118px;
+    }
+
+    .card-rank {
+        font-size: 27px;
+    }
+
+    .card-suit {
+        font-size: 25px;
+    }
+
+    .players-area {
+        grid-template-columns:
+            1fr 35px 1fr;
+    }
+
+    .player-name {
+        font-size: 11px;
+    }
+
+    .round-box {
+        padding: 8px 9px;
+        font-size: 9px;
+    }
+
 }
 
 
+/* =========================
+   DISABLED BUTTON
+========================= */
 
-        
+button:disabled {
+    pointer-events: none;
+}
+
+
+/* =========================
+   SMOOTH SCREEN
+========================= */
+
+.screen {
+    animation:
+        screenIn .35s ease;
+}
+
+@keyframes screenIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================
+   CARD SHADOW
+========================= */
+
+.playing-card:not(.back) {
+    animation:
+        cardGlow .6s ease;
+}
+
+@keyframes cardGlow {
+
+    0% {
+        box-shadow:
+            0 0 0 rgba(39,227,138,0);
+    }
+
+    50% {
+        box-shadow:
+            0 0 30px rgba(39,227,138,.18),
+            0 15px 35px rgba(0,0,0,.45);
+    }
+
+    100% {
+        box-shadow:
+            0 15px 35px rgba(0,0,0,.45);
+    }
+
+}
