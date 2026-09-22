@@ -1,11 +1,12 @@
 const socket = io();
 
+const homeScreen = document.getElementById("homeScreen");
+const arena = document.getElementById("arena");
+
 const findBtn = document.getElementById("findBtn");
 const againBtn = document.getElementById("againBtn");
 
 const statusEl = document.getElementById("status");
-const arena = document.getElementById("arena");
-
 const countdown = document.getElementById("countdown");
 const result = document.getElementById("result");
 
@@ -16,14 +17,121 @@ const scoreEl = document.getElementById("score");
 const winsEl = document.getElementById("wins");
 const roundEl = document.getElementById("round");
 
-
 let score = 0;
 let wins = 0;
 let round = 0;
 
+let audioContext = null;
+
 
 /* =========================
-   RESET CARDS
+   SOUND SYSTEM
+========================= */
+
+function initSound() {
+    if (!audioContext) {
+        audioContext = new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+    }
+
+    if (audioContext.state === "suspended") {
+        audioContext.resume();
+    }
+}
+
+
+function beep(
+    frequency = 500,
+    duration = 0.12,
+    type = "sine",
+    volume = 0.06
+) {
+    if (!audioContext) return;
+
+    const oscillator =
+        audioContext.createOscillator();
+
+    const gain =
+        audioContext.createGain();
+
+    oscillator.type = type;
+    oscillator.frequency.value = frequency;
+
+    gain.gain.setValueAtTime(
+        volume,
+        audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime + duration
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+        audioContext.currentTime + duration
+    );
+}
+
+
+function soundClick() {
+    beep(650, 0.08, "sine", 0.05);
+}
+
+
+function soundCountdown() {
+    beep(420, 0.12, "square", 0.045);
+}
+
+
+function soundReveal() {
+    beep(720, 0.10, "triangle", 0.06);
+
+    setTimeout(() => {
+        beep(980, 0.12, "triangle", 0.05);
+    }, 80);
+}
+
+
+function soundWin() {
+    beep(660, 0.12, "sine", 0.07);
+
+    setTimeout(() => {
+        beep(880, 0.14, "sine", 0.07);
+    }, 130);
+
+    setTimeout(() => {
+        beep(1100, 0.20, "sine", 0.06);
+    }, 270);
+}
+
+
+function soundLose() {
+    beep(320, 0.16, "sawtooth", 0.045);
+
+    setTimeout(() => {
+        beep(220, 0.25, "sawtooth", 0.035);
+    }, 150);
+}
+
+
+function soundDraw() {
+    beep(500, 0.14, "triangle", 0.05);
+
+    setTimeout(() => {
+        beep(500, 0.14, "triangle", 0.04);
+    }, 170);
+}
+
+
+/* =========================
+   CARD FUNCTIONS
 ========================= */
 
 function resetCards() {
@@ -33,7 +141,6 @@ function resetCards() {
 
     yourCard.textContent = "?";
 
-
     oppCard.className =
         "playing-card back";
 
@@ -41,42 +148,50 @@ function resetCards() {
 }
 
 
-/* =========================
-   SHOW CARD
-========================= */
+function showCard(element, card) {
 
-function showCard(el, card) {
+    element.className =
+        "playing-card";
 
-    el.className =
-        "playing-card" +
-        (card.color === "red" ? " red" : "");
+    if (card.color === "red") {
+        element.classList.add("red");
+    }
 
+    element.innerHTML =
+        `<div class="card-rank">${card.rank}</div>` +
+        `<div class="card-suit">${card.suit}</div>`;
 
-    el.innerHTML =
-        `<div>${card.rank}</div>` +
-        `<div>${card.suit}</div>`;
+    element.classList.add("card-reveal");
+
+    setTimeout(() => {
+        element.classList.remove("card-reveal");
+    }, 500);
 }
 
 
 /* =========================
-   FIND MATCH
+   MATCHMAKING
 ========================= */
 
 function findMatch() {
 
+    initSound();
+    soundClick();
+
     findBtn.disabled = true;
 
     statusEl.textContent =
-        "Searching for an opponent...";
+        "🔎 Searching for opponent...";
 
+    result.textContent = "";
+
+    countdown.textContent = "";
+
+    resetCards();
 
     socket.emit("find_match");
 }
 
-
-/* =========================
-   FIND BUTTON
-========================= */
 
 findBtn.addEventListener(
     "click",
@@ -92,6 +207,9 @@ againBtn.addEventListener(
     "click",
     () => {
 
+        initSound();
+        soundClick();
+
         result.textContent = "";
 
         countdown.textContent = "";
@@ -106,21 +224,41 @@ againBtn.addEventListener(
 
 
 /* =========================
-   SOCKET CONNECTED
+   SOCKET CONNECTION
 ========================= */
+
+socket.on(
+    "connect",
+    () => {
+
+        statusEl.textContent =
+            "🟢 Connected • Ready to play";
+    }
+);
+
+
+socket.on(
+    "disconnect",
+    () => {
+
+        statusEl.textContent =
+            "🔴 Connection lost...";
+    }
+);
+
 
 socket.on(
     "connected",
     () => {
 
         statusEl.textContent =
-            "Connected";
+            "🟢 Connected • Ready to play";
     }
 );
 
 
 /* =========================
-   MATCHMAKING
+   WAITING
 ========================= */
 
 socket.on(
@@ -128,7 +266,9 @@ socket.on(
     data => {
 
         statusEl.textContent =
-            data.message;
+            "🔎 " + data.message;
+
+        findBtn.disabled = true;
     }
 );
 
@@ -141,48 +281,62 @@ socket.on(
     "match_found",
     data => {
 
-        arena.classList.remove("hidden");
+        initSound();
+        soundClick();
 
+        homeScreen.classList.add(
+            "hidden"
+        );
+
+        arena.classList.remove(
+            "hidden"
+        );
 
         statusEl.textContent =
-            `Opponent found • Player ${data.player_number}`;
-
+            "⚔️ Opponent found! Get ready...";
 
         round += 1;
 
-
         roundEl.textContent =
-            `ROUND ${round}`;
-
+            "ROUND " + round;
 
         result.textContent = "";
 
+        countdown.textContent = "";
 
         resetCards();
     }
 );
+
+
 /* =========================
-   ROUND START
+   COUNTDOWN
 ========================= */
 
 socket.on(
     "round_start",
     data => {
 
+        initSound();
+
         let n = data.countdown;
 
-        countdown.textContent = n;
+        countdown.textContent =
+            n;
 
+        soundCountdown();
 
-        const timer = setInterval(
-            () => {
+        const timer =
+            setInterval(() => {
 
                 n -= 1;
 
-
                 if (n > 0) {
 
-                    countdown.textContent = n;
+                    countdown.textContent =
+                        n;
+
+                    soundCountdown();
 
                 } else {
 
@@ -190,27 +344,37 @@ socket.on(
 
                     countdown.textContent =
                         "DUEL!";
+
+                    beep(
+                        900,
+                        0.18,
+                        "square",
+                        0.06
+                    );
                 }
 
-            },
-            1000
-        );
+            }, 1000);
     }
 );
-
-
 /* =========================
-   REVEAL YOUR CARD
+   CARD REVEAL
 ========================= */
 
 socket.on(
     "reveal_card",
     data => {
 
+        initSound();
+
         showCard(
             yourCard,
             data.card
         );
+
+        soundReveal();
+
+        statusEl.textContent =
+            "🃏 Your card is revealed!";
     }
 );
 
@@ -223,16 +387,21 @@ socket.on(
     "round_result",
     data => {
 
+        initSound();
+
         showCard(
             yourCard,
             data.your_card
         );
 
+        setTimeout(() => {
 
-        showCard(
-            oppCard,
-            data.opponent_card
-        );
+            showCard(
+                oppCard,
+                data.opponent_card
+            );
+
+        }, 180);
 
 
         countdown.textContent = "";
@@ -245,21 +414,47 @@ socket.on(
             score += 100;
 
             result.textContent =
-                "YOU WIN";
+                "🏆 YOU WIN!";
 
+            result.className =
+                "result win";
 
-        } else if (data.result === "loss") {
+            statusEl.textContent =
+                "🎉 Great! You won this round.";
+
+            soundWin();
+
+        }
+
+        else if (data.result === "loss") {
 
             result.textContent =
-                "YOU LOSE";
+                "DEFEAT";
 
+            result.className =
+                "result loss";
 
-        } else {
+            statusEl.textContent =
+                "Opponent won this round.";
+
+            soundLose();
+
+        }
+
+        else {
 
             score += 25;
 
             result.textContent =
                 "DRAW";
+
+            result.className =
+                "result draw";
+
+            statusEl.textContent =
+                "🤝 Same card value — Draw.";
+
+            soundDraw();
         }
 
 
@@ -268,5 +463,38 @@ socket.on(
 
         winsEl.textContent =
             wins;
+
+
+        againBtn.disabled = false;
+
+        againBtn.textContent =
+            "⚔️ PLAY ANOTHER ROUND";
+    }
+);
+
+
+/* =========================
+   FIRST USER TOUCH
+   UNLOCK MOBILE SOUND
+========================= */
+
+document.addEventListener(
+    "touchstart",
+    () => {
+        initSound();
+    },
+    {
+        once: true
+    }
+);
+
+
+document.addEventListener(
+    "click",
+    () => {
+        initSound();
+    },
+    {
+        once: true
     }
 );
