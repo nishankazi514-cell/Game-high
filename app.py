@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit, join_room
 import random
 import uuid
 from threading import Lock
+import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "high-card-duel-secret"
@@ -15,23 +16,13 @@ socketio = SocketIO(
 
 rooms = {}
 waiting_players = []
-
 lock = Lock()
 
 RANKS = [
-    ("2", 2),
-    ("3", 3),
-    ("4", 4),
-    ("5", 5),
-    ("6", 6),
-    ("7", 7),
-    ("8", 8),
-    ("9", 9),
-    ("10", 10),
-    ("J", 11),
-    ("Q", 12),
-    ("K", 13),
-    ("A", 14)
+    ("2", 2), ("3", 3), ("4", 4), ("5", 5),
+    ("6", 6), ("7", 7), ("8", 8), ("9", 9),
+    ("10", 10), ("J", 11), ("Q", 12),
+    ("K", 13), ("A", 14)
 ]
 
 SUITS = [
@@ -43,13 +34,10 @@ SUITS = [
 
 
 def create_deck():
-
     deck = []
 
     for rank, value in RANKS:
-
         for suit, color in SUITS:
-
             deck.append({
                 "rank": rank,
                 "value": value,
@@ -58,12 +46,10 @@ def create_deck():
             })
 
     random.shuffle(deck)
-
     return deck
 
 
 def public_card(card):
-
     if not card:
         return None
 
@@ -76,13 +62,11 @@ def public_card(card):
 
 @app.route("/")
 def index():
-
     return render_template("index.html")
 
 
 @socketio.on("connect")
 def handle_connect():
-
     emit(
         "connected",
         {
@@ -93,13 +77,11 @@ def handle_connect():
 
 @socketio.on("find_match")
 def find_match():
-
     sid = request.sid
 
     with lock:
 
         if sid in waiting_players:
-
             emit(
                 "matchmaking",
                 {
@@ -107,23 +89,18 @@ def find_match():
                     "message": "Searching for an opponent..."
                 }
             )
-
             return
 
         opponent = None
 
         while waiting_players:
-
             candidate = waiting_players.pop(0)
 
             if candidate != sid:
-
                 opponent = candidate
-
                 break
 
         if opponent is None:
-
             waiting_players.append(sid)
 
             emit(
@@ -133,7 +110,6 @@ def find_match():
                     "message": "Searching for an opponent..."
                 }
             )
-
             return
 
         room_id = str(uuid.uuid4())
@@ -146,7 +122,6 @@ def find_match():
         }
 
     join_room(room_id, sid=sid)
-
     join_room(room_id, sid=opponent)
 
     numbers = {
@@ -155,7 +130,6 @@ def find_match():
     }
 
     for player_sid in (opponent, sid):
-
         emit(
             "match_found",
             {
@@ -172,7 +146,6 @@ def find_match():
 
 
 def start_round(room_id):
-
     socketio.sleep(1)
 
     room = rooms.get(room_id)
@@ -181,7 +154,6 @@ def start_round(room_id):
         return
 
     for sid in room["players"]:
-
         emit(
             "round_start",
             {
@@ -196,22 +168,18 @@ def start_round(room_id):
 
     if not room:
         return
-            with lock:
+
+    with lock:
 
         if room["finished"]:
             return
 
         room["cards"] = {
-            room["players"][0]:
-                room["deck"].pop(),
-
-            room["players"][1]:
-                room["deck"].pop()
+            room["players"][0]: room["deck"].pop(),
+            room["players"][1]: room["deck"].pop()
         }
 
-
     for sid in room["players"]:
-
         emit(
             "reveal_card",
             {
@@ -222,14 +190,12 @@ def start_round(room_id):
             to=sid
         )
 
-
     socketio.sleep(1)
 
     finish_round(room_id)
 
 
 def finish_round(room_id):
-
     room = rooms.get(room_id)
 
     if not room:
@@ -252,26 +218,20 @@ def finish_round(room_id):
         room["finished"] = True
 
         if card_a["value"] > card_b["value"]:
-
             result = "player_a"
 
         elif card_b["value"] > card_a["value"]:
-
             result = "player_b"
 
         else:
-
             result = "draw"
-
 
     for sid in room["players"]:
 
         if result == "draw":
-
             outcome = "draw"
 
         elif result == "player_a":
-
             outcome = (
                 "win"
                 if sid == player_a
@@ -279,13 +239,11 @@ def finish_round(room_id):
             )
 
         else:
-
             outcome = (
                 "win"
                 if sid == player_b
                 else "loss"
             )
-
 
         opponent_sid = (
             player_b
@@ -293,23 +251,19 @@ def finish_round(room_id):
             else player_a
         )
 
-
         emit(
             "round_result",
             {
                 "result": outcome,
-
                 "your_card": public_card(
                     room["cards"][sid]
                 ),
-
                 "opponent_card": public_card(
                     room["cards"][opponent_sid]
                 )
             },
             to=sid
         )
-
 
     socketio.start_background_task(
         cleanup_room,
@@ -318,20 +272,14 @@ def finish_round(room_id):
 
 
 def cleanup_room(room_id):
-
     socketio.sleep(5)
 
     with lock:
-
-        rooms.pop(
-            room_id,
-            None
-        )
+        rooms.pop(room_id, None)
 
 
 @socketio.on("leave_match")
 def leave_match():
-
     sid = request.sid
 
     with lock:
@@ -342,22 +290,15 @@ def leave_match():
             if player != sid
         ]
 
-
         for room_id, room in list(rooms.items()):
 
             if sid in room["players"]:
-
-                rooms.pop(
-                    room_id,
-                    None
-                )
-
+                rooms.pop(room_id, None)
                 break
 
 
 @socketio.on("disconnect")
 def handle_disconnect():
-
     sid = request.sid
 
     with lock:
@@ -368,24 +309,26 @@ def handle_disconnect():
             if player != sid
         ]
 
-
         for room_id, room in list(rooms.items()):
 
             if sid in room["players"]:
-
-                rooms.pop(
-                    room_id,
-                    None
-                )
-
+                rooms.pop(room_id, None)
                 break
 
 
 if __name__ == "__main__":
 
+    port = int(
+        os.environ.get(
+            "PORT",
+            5000
+        )
+    )
+
     socketio.run(
         app,
         host="0.0.0.0",
-        port=5000,
+        port=port,
         debug=False
-            )
+    )
+    
