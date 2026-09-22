@@ -5,20 +5,17 @@
 <meta charset="UTF-8">
 
 <meta
-name="viewport"
-content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
 >
 
-<meta
-name="theme-color"
-content="#07110d"
->
+<meta name="theme-color" content="#07110d">
 
 <title>High Card Duel</title>
 
 <link
-rel="stylesheet"
-href="/static/style.css"
+  rel="stylesheet"
+  href="/static/style.css"
 >
 
 </head>
@@ -29,357 +26,375 @@ href="/static/style.css"
 
 <!-- ================= HOME ================= -->
 
-<section
-id="homeScreen"
-class="screen"
->
+<section id="homeScreen" class="screen">
 
-<div class="home-card">
+  <div class="home-card">
 
-<div class="game-icon">
-🃏
-</div>
+    <div class="game-logo">
+      <div class="logo-card">A<span>♠</span></div>
+      <div class="logo-card">K<span>♥</span></div>
+    </div>
 
-<h1>
-HIGH CARD
-<span>DUEL</span>
-</h1>
+    <div class="badge">
+      🃏 1V1 CARD BATTLE
+    </div>
 
-<p class="subtitle">
-Real-Time 1v1 Card Battle
-</p>
+    <h1>
+      HIGH CARD
+      <span>DUEL</span>
+    </h1>
 
-<div class="virtual-label">
-🟢 VIRTUAL POINTS ONLY
-</div>
+    <p class="subtitle">
+      Real-Time Card Showdown
+    </p>
 
-<div class="instruction-box">
+    <div class="virtual-badge">
+      🟢 VIRTUAL POINTS ONLY
+    </div>
 
-<h3>
-HOW TO PLAY
-</h3>
+    <div class="how-to">
 
-<div class="instruction">
-<span>1</span>
-<div>
-<strong>Find Opponent</strong>
-<small>
-Wait for another player
-</small>
-</div>
-</div>
+      <h3>HOW TO PLAY</h3>
 
-<div class="instruction">
-<span>2</span>
-<div>
-<strong>Cards Are Dealt</strong>
-<small>
-You and opponent get one card
-</small>
-</div>
-</div>
+      <div class="step">
+        <b>1</b>
+        <div>
+          <strong>Find Opponent</strong>
+          <small>Wait for another player</small>
+        </div>
+      </div>
 
-<div class="instruction">
-<span>3</span>
-<div>
-<strong>Higher Card Wins</strong>
-<small>
-A is highest, 2 is lowest
-</small>
-</div>
-</div>
+      <div class="step">
+        <b>2</b>
+        <div>
+          <strong>Get Your Card</strong>
+          <small>Both players receive one card</small>
+        </div>
+      </div>
 
-</div>
+      <div class="step">
+        <b>3</b>
+        <div>
+          <strong>Higher Card Wins</strong>
+          <small>A is highest • 2 is lowest</small>
+        </div>
+      </div>
 
-<div
-id="homeStatus"
-class="connection-status"
->
-Connecting to server...
-</div>
+    </div>
 
-<button
-id="findBtn"
-class="primary-btn"
-disabled
->
-FIND OPPONENT
-</button>
+    <div
+      id="homeStatus"
+      class="connection-status"
+    >
+      🔄 Connecting to server...
+    </div>
 
-<p class="small-note">
-🔊 Sound effects included
-</p>
+    <button
+      id="findBtn"
+      class="primary-btn"
+      disabled
+    >
+      ⚔️ FIND OPPONENT
+    </button>
 
-</div>
+    <div class="sound-info">
+      🔊 Sound effects enabled
+    </div>
+
+  </div>
 
 </section>
 
 
-<!-- ================= MATCHMAKING ================= -->
+<!-- ================= SEARCHING ================= -->
 
 <section
-id="searchScreen"
-class="screen hidden"
+  id="searchScreen"
+  class="screen hidden"
 >
 
-<div class="search-card">
-
-<div class="search-icon">
-🔎
-</div>
-
-<h2>
-FINDING OPPONENT
-</h2>
-
-<p>
-Looking for another player...
-</p>
-
-<div class="search-animation">
-<span></span>
-<span></span>
-<span></span>
-</div>
-
-<div
-id="searchStatus"
-class="search-status"
->
-Waiting for opponent
-</div>
-
-<button
-id="cancelSearchBtn"
-class="secondary-btn"
->
-CANCEL
-</button>
-
-</div>
-
-</section>
-<!-- ================= GAME ARENA ================= -->
-
-<section
-id="arenaScreen"
-class="screen hidden"
->
-
-<div class="arena-header">
-
-<div>
-<div class="arena-title">
-HIGH CARD DUEL
-</div>
-
-<div
-id="roundLabel"
-class="round-label"
->
-ROUND 1
-</div>
-</div>
-
-<div class="points-box">
-<span>POINTS</span>
-<strong id="score">0</strong>
-</div>
-
-</div>
-
-
-<!-- BATTLE STATUS -->
-
-<div
-id="arenaStatus"
-class="battle-status"
-aria-live="polite"
->
-Waiting for duel...
-</div>
-
-
-<!-- PLAYERS -->
-
-<div class="battle-area">
-
-
-<!-- YOU -->
-
-<div class="player-panel">
-
-<div class="player-label">
-YOU
-</div>
-
-<div class="player-name">
-PLAYER 1
-</div>
-
-<div
-id="yourCard"
-class="playing-card card-back"
->
-<div class="card-question">
-?
-</div>
-
-<div class="card-hint">
-YOUR CARD
-</div>
-</div>
-
-</div>
-
-
-<!-- CENTER -->
-
-<div class="center-area">
-
-<div class="versus">
-VS
-</div>
-
-<div
-id="countdown"
-class="countdown"
-aria-live="assertive"
->
-READY
-</div>
-
-</div>
-
-
-<!-- OPPONENT -->
-
-<div class="player-panel">
-
-<div class="player-label opponent">
-OPPONENT
-</div>
-
-<div class="player-name">
-PLAYER 2
-</div>
-
-<div
-id="opponentCard"
-class="playing-card card-back"
->
-<div class="card-question">
-?
-</div>
-
-<div class="card-hint">
-OPPONENT CARD
-</div>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- RESULT -->
-
-<div
-id="resultBox"
-class="result-box hidden"
-aria-live="assertive"
->
-
-<div
-id="resultIcon"
-class="result-icon"
->
-🏆
-</div>
-
-<div
-id="resultTitle"
-class="result-title"
->
-YOU WIN!
-</div>
-
-<div
-id="resultText"
-class="result-text"
->
-You got the higher card.
-</div>
-
-<div class="points-earned">
-<span>POINTS</span>
-
-<strong id="pointsEarned">
-+100
-</strong>
-</div>
-
-</div>
-
-
-<!-- ROUND INFO -->
-
-<div class="round-info">
-
-<div>
-<span>WINS</span>
-<strong id="wins">0</strong>
-</div>
-
-<div>
-<span>ROUND</span>
-<strong id="roundNumber">1</strong>
-</div>
-
-<div>
-<span>STATUS</span>
-<strong id="gameState">READY</strong>
-</div>
-
-</div>
-
-
-<!-- ACTION BUTTON -->
-
-<button
-id="playAgainBtn"
-class="primary-btn hidden"
->
-PLAY ANOTHER ROUND
-</button>
-
-
-<button
-id="leaveBtn"
-class="secondary-btn"
->
-LEAVE DUEL
-</button>
-
-
-<div class="arena-footer">
-Virtual points only • No wagering
-</div>
+  <div class="search-card">
+
+    <div class="search-icon">
+      🔎
+    </div>
+
+    <h2>
+      FINDING OPPONENT
+    </h2>
+
+    <p>
+      Searching for another player...
+    </p>
+
+    <div class="loader">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div
+      id="searchStatus"
+      class="search-status"
+    >
+      Waiting for opponent
+    </div>
+
+    <div class="match-tip">
+      👥 Another browser/device must also press
+      <strong>FIND OPPONENT</strong>
+    </div>
+
+    <button
+      id="cancelBtn"
+      class="secondary-btn"
+    >
+      CANCEL SEARCH
+    </button>
+
+  </div>
 
 </section>
 
 
-<!-- ================= SCRIPTS ================= -->
+<!-- ================= ARENA ================= -->
+
+<section
+  id="arenaScreen"
+  class="screen hidden"
+>
+
+  <!-- HEADER -->
+
+  <div class="arena-header">
+
+    <div>
+
+      <div class="arena-title">
+        HIGH CARD DUEL
+      </div>
+
+      <div
+        id="roundLabel"
+        class="round-label"
+      >
+        ROUND 1
+      </div>
+
+    </div>
+
+    <div class="score-box">
+
+      <span>
+        POINTS
+      </span>
+
+      <strong id="score">
+        0
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- STATUS -->
+
+  <div
+    id="arenaStatus"
+    class="battle-status"
+  >
+    ⚔️ Preparing duel...
+  </div>
+
+
+  <!-- BATTLE -->
+
+  <div class="battle-area">
+
+
+    <!-- YOU -->
+
+    <div class="player-card">
+
+      <div class="player-title">
+        YOU
+      </div>
+
+      <div class="player-name">
+        PLAYER 1
+      </div>
+
+      <div
+        id="yourCard"
+        class="playing-card card-back"
+      >
+
+        <div class="question">
+          ?
+        </div>
+
+        <div class="card-label">
+          YOUR CARD
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CENTER -->
+
+    <div class="middle-area">
+
+      <div class="vs">
+        VS
+      </div>
+
+      <div
+        id="countdown"
+        class="countdown"
+      >
+        READY
+      </div>
+
+    </div>
+
+
+    <!-- OPPONENT -->
+
+    <div class="player-card">
+
+      <div class="player-title opponent">
+        OPPONENT
+      </div>
+
+      <div class="player-name">
+        PLAYER 2
+      </div>
+
+      <div
+        id="opponentCard"
+        class="playing-card card-back"
+      >
+
+        <div class="question">
+          ?
+        </div>
+
+        <div class="card-label">
+          OPPONENT
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESULT -->
+
+  <div
+    id="resultBox"
+    class="result-box hidden"
+  >
+
+    <div id="resultIcon" class="result-icon">
+      🏆
+    </div>
+
+    <div
+      id="resultTitle"
+      class="result-title"
+    >
+      YOU WIN!
+    </div>
+
+    <div
+      id="resultText"
+      class="result-text"
+    >
+      You got the higher card.
+    </div>
+
+    <div class="earned">
+
+      <span>
+        POINTS EARNED
+      </span>
+
+      <strong id="pointsEarned">
+        +100
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <!-- STATS -->
+
+  <div class="stats">
+
+    <div>
+      <span>WINS</span>
+      <strong id="wins">0</strong>
+    </div>
+
+    <div>
+      <span>ROUND</span>
+      <strong id="roundNumber">1</strong>
+    </div>
+
+    <div>
+      <span>STATE</span>
+      <strong id="gameState">READY</strong>
+    </div>
+
+  </div>
+
+
+  <!-- ACTIONS -->
+
+  <button
+    id="playAgainBtn"
+    class="primary-btn hidden"
+  >
+    ⚔️ PLAY ANOTHER ROUND
+  </button>
+
+
+  <button
+    id="leaveBtn"
+    class="secondary-btn"
+  >
+    ← LEAVE DUEL
+  </button>
+
+
+  <div class="footer">
+    Virtual points only • No wagering
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- SOCKET.IO -->
 
 <script
 src="https://cdn.socket.io/4.8.1/socket.io.min.js"
 ></script>
 
+
+<!-- GAME JS -->
+
 <script
 src="/static/main.js"
 ></script>
 
-</div>
-
 </body>
+
 </html>
